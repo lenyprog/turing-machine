@@ -1,108 +1,89 @@
+/* Réinitialisation de styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-	background-color: #f4f4f4;
-	margin: 30px 0 550px 0;
-	font-family: Helvetica, Arial, sans-serif;
-}
-
-h2 {
-	font-size: 0.9em;
-	font-weight: normal;
-	margin: 0 0 0.7em 0;
-}
-
-p {
-	margin: 0;
-}
-
-a {
-	color: #234674;
-}
-
-ol {
-	padding: 0;
-	margin-left: 5px;
-}
-
-li {
-	display: table-cell;
-	vertical-align: bottom;
-	padding-right: 5px;
-}
-
-li input[type=text] {
-	font-family: Consolas, Monaco, monospace;
-	font-size: 1.5em;
-	width: 40px;
-	height: 40px;
-	border: 1px solid #ccc;
-	text-align: center;
-	background-color: #fff;
-	color: #000;
-}
-
-li.active input[type=text] {
-	background-color: #fff8de;
-	border-color: #e7ddb4;
-}
-
-li.active:before {
-	content: url('magnet.png');
-	display: block;
-	width: 24px;
-	height: 30px;
-	margin: 0 auto;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
 }
 
 .container {
-	position: fixed;
-	width: 640px;
-	margin: 40px auto;
-	padding: 25px 20px;
-	left: 50%;
-	margin-left: -343px;
-	background-color: #fff;
-	border: 1px solid #ccc;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-.actions, .count, .state, .calc {
-	float: left;
-	width: 32%;
-	height: 70px;
-	border: 1px solid #ccc;
-	border-width: 0 1px 1px 0;
+header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.actions p {
-	line-height: 2.5em;
+header h1 {
+    font-size: 2em;
+    color: #234674;
 }
 
-.count, .state, .calc {
-	padding-left: 10px;
+footer {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
 }
 
-.count p, .state p, .calc p {
-	font-size: 2em;
-	font-family: Consolas, Monaco, monospace;
+footer p {
+    color: #777;
 }
 
-.count {
-	width: 12%;
+.turing-machine {
+    width: 60%;
+    margin-bottom: 20px;
 }
 
-.state {
-	width: 12%;
+.controls, .details {
+    width: 25%;
 }
 
-.calc {
-	width: 38%;
-	border-right: 0;
+.controls button, .details h2 {
+    margin-bottom: 10px;
 }
 
-#calc {
-	cursor: pointer;
+.counter, .current-state, .calculation {
+    margin-bottom: 20px;
 }
 
-#canvas {
-	clear: both;
-	margin: 100px auto 20px auto;
+.counter p, .current-state p, .calculation p {
+    font-size: 1.2em;
+    color: #555;
+}
+
+button {
+    background-color: #234674;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0c2c52;
+}
+
+/* Médias Queries */
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .turing-machine, .controls, .details {
+        width: 100%;
+    }
 }
