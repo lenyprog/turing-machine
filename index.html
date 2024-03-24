@@ -1,139 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Machine de Turing avec addition en JavaScript</title>
-    <link rel="stylesheet" href="static/style.css" />
-    <script src="static/jquery.js"></script>
-    <script src="static/raphael.js"></script>
-    <script src="static/joint.js"></script>
-    <script src="static/turing.js"></script>
-    <script>
-        $(function () {
-            // Graph
-            var r = Raphael('canvas', 1400, 400);
-            var top = 200;
+	<meta charset="utf-8" />
+	<title>Machine de Turing en Javascript</title>
+	<link rel="stylesheet" href="static/style.css" />
+	<script src="static/jquery.js"></script>
+	<script src="static/raphael.js"></script>
+	<script src="static/joint.js"></script>
+	<script src="static/turing.js"></script>
+	<script>
+		$(function () {
 
-            // Définition des états et des transitions
-            var steps = {
-                // Transitions existantes...
-                's3:+': {state: 's10', value: '+', move: 'right'}, // Lecture du symbole d'addition
-                's10:1': {state: 's11', value: '1', move: 'right'}, // Déplacement vers la droite pour lire le premier chiffre
-                's11:1': {state: 's12', value: '1', move: 'right'}, // Déplacement vers la droite pour lire le deuxième chiffre
-                's12:1': {state: 's13', value: '1', move: 'right'}, // Déplacement vers la droite pour lire le troisième chiffre (si nécessaire)
-                // Logique d'addition
-                's13:=': {state: 's14', value: '=', move: 'left'}, // Retour en arrière pour écrire le résultat
-                's14:1': {state: 's14', value: '1', move: 'left'}, // Écriture du résultat (avec gestion de la retenue)
-                // Autres transitions existantes...
-            };
+			// Graph
+	        var r = Raphael('canvas', 640, 400);
+			var top = 200;
+			
+	        var s1 = r.circle(40, top + 0, 20);
+	        s1.node.setAttribute('class', 'state s1');
+	        var t1 = r.text(40, top + 0, "s1").attr({ "font-size": 15});
+	        t1.node.setAttribute('class', 'text s1');
+	        
+	        var s2 = r.circle(200, top + 0, 20);
+	        s2.node.setAttribute('class', 'state s2');
+	        var t2 = r.text(200, top + 0, "s2").attr({ "font-size": 15});
+	        t2.node.setAttribute('class', 'text s2');
 
-            // Ajout de nouveaux états pour gérer l'addition
-            var s10 = r.circle(650, top + 0, 20);
-            s10.node.setAttribute('class', 'state s10');
-            var t10 = r.text(650, top + 0, "s10").attr({ "font-size": 15});
-            t10.node.setAttribute('class', 'text s10');
+	        var s3 = r.circle(350, top + 0, 20);
+	        s3.node.setAttribute('class', 'state s3');
+	        var t3 = r.text(350, top + 0, "s3").attr({ "font-size": 15});
+	        t3.node.setAttribute('class', 'text s3');
 
-            var s11 = r.circle(800, top + 0, 20);
-            s11.node.setAttribute('class', 'state s11');
-            var t11 = r.text(800, top + 0, "s11").attr({ "font-size": 15});
-            t11.node.setAttribute('class', 'text s11');
+	        var s4 = r.circle(500, top + 0, 20);
+	        s4.node.setAttribute('class', 'state s4');
+	        var t4 = r.text(500, top + 0, "s4").attr({ "font-size": 15});
+	        t4.node.setAttribute('class', 'text s4');
 
-            var s12 = r.circle(950, top + 0, 20);
-            s12.node.setAttribute('class', 'state s12');
-            var t12 = r.text(950, top + 0, "s12").attr({ "font-size": 15});
-            t12.node.setAttribute('class', 'text s12');
+	        var s5 = r.circle(500, top + 160, 20);
+	        s5.node.setAttribute('class', 'state s5');
+	       	var t5 = r.text(500, top + 160, "s5").attr({ "font-size": 15});
+	        t5.node.setAttribute('class', 'text s5');
+	        
 
-            var s13 = r.circle(1100, top + 0, 20);
-            s13.node.setAttribute('class', 'state s13');
-            var t13 = r.text(1100, top + 0, "s13").attr({ "font-size": 15});
-            t13.node.setAttribute('class', 'text s13');
+	        var s6 = r.circle(350, top + 160, 20);
+	        s6.node.setAttribute('class', 'state s6');
+	        var t6 = r.text(350, top + 160, "s6").attr({ "font-size": 15});
+	        t6.node.setAttribute('class', 'text s6');
 
-            var s14 = r.circle(1100, top + 160, 20);
-            s14.node.setAttribute('class', 'state s14');
-            var t14 = r.text(1100, top + 160, "s14").attr({ "font-size": 15});
-            t14.node.setAttribute('class', 'text s14');
+	        var s7 = r.circle(200, top - 100, 20);
+	        s7.node.setAttribute('class', 'state s7');
+	        var t7 = r.text(200, top - 100, "s7").attr({ "font-size": 15});
+	        t7.node.setAttribute('class', 'text s7');
 
-            // Initialisation de la machine de Turing avec les transitions mises à jour
-            var turing = new Turing(steps, 's1', 's8');
-            turing.tape = ['1', '1', '1', '+', '1', '1', '=']; // Exemple d'addition à effectuer
-            turing.calc = '3 + 2 ='; // Expression d'addition
-            turing.reset();
+	        var s8 = r.circle(40, top - 100, 20);
+	        s8.node.setAttribute('class', 'state s8');
+	        var t8 = r.text(40, top - 100, "s8").attr({ "font-size": 15});
+	        t8.node.setAttribute('class', 'text s8');
 
-            // Gestion des boutons d'action
-            $('#run').click(function () {
-                turing.run();
-            });
+	        s1.joint(s2, {label: '1 / X, R', attrs: {'stroke-dasharray': 'none'}});
+	        s2.joint(s2, {label: '1 / 1, R', vertices: ['230 ' + (top + 80), '160 ' + (top + 80)], attrs: {'stroke-dasharray': 'none'}});
+	        s2.joint(s3, {label: '* / *, R', attrs: {'stroke-dasharray': 'none'}});
+	        s3.joint(s4, {label: '1 / Y, R', attrs: {'stroke-dasharray': 'none'}});
+	        s3.joint(s6, {label: '= / =, L', attrs: {'stroke-dasharray': 'none'}});
+	        s4.joint(s4, {label: '1 / 1, R\n= / =, R', vertices: ['560 ' + (top - 40), '560 ' + (top + 40)], attrs: {'stroke-dasharray': 'none'}});
+	        s4.joint(s5, {label: '  / 1, L', attrs: {'stroke-dasharray': 'none'}});
+	        s5.joint(s5, {label: '1 / 1, L\n= / =, L', vertices: ['560 ' + (top + 120), '560 ' + (top + 200)], attrs: {'stroke-dasharray': 'none'}});
+	        s5.joint(s3, {label: 'Y / Y, R', attrs: {'stroke-dasharray': 'none'}});
+	        s6.joint(s6, {label: 'Y / 1, L\n* / *, L\n1 / 1, L', vertices: ['410 ' + (top + 120), '410 ' + (top + 200)], attrs: {'stroke-dasharray': 'none'}});
+	        s6.joint(s1, {label: 'X / X, R', vertices: ['180 ' + (top + 160)], attrs: {'stroke-dasharray': 'none'}});
+	        s1.joint(s8, {label: '* / *, R', attrs: {'stroke-dasharray': 'none'}});
 
-            $('#step').click(function () {
-                turing.step();
-            });
+	        s1.joint(s7, {label: '0 / 0, R', attrs: {'stroke-dasharray': 'none'}});
+	        s3.joint(s7, {label: '0 / 0, R', attrs: {'stroke-dasharray': 'none'}});
+	        s7.joint(s7, {label: '* / *, R\n1 / 1, R\n0 / 0, R\n= / =, R', vertices: ['230 ' + (top - 170), '160 ' + (top - 170)], attrs: {'stroke-dasharray': 'none'}});
+	        s7.joint(s8, {label: '  / 0, R', attrs: {'stroke-dasharray': 'none'}});
 
-            $('#reset').click(function () {
-                turing.reset();
-            });
+	        // Steps
+			var steps = {};
 
-            $('#calc').click(function () {
-                var calc = prompt('Veuillez entrer une nouvelle addition (par exemple, 3 + 2):');
-                if (calc) {
-                    var match = calc.match(/([0-9]+)[ ]*\+[ ]*([0-9]+)/i);
-                    if (match) {
-                        var first = parseInt(match[1]), second = parseInt(match[2]);
-                        var tape = [];
-                        var i = 0;
-                        if (0 == first) {
-                            tape[i++] = '0';
-                        } else {
-                            for ( ; i < first; i++) {
-                                tape[i] = '1';
-                            }
-                        }
-                        tape[i++] = '+';
-                        if (0 == second) {
-                            tape[i++] = '0';
-                        } else {
-                            for (var end = second + i; i < end; i++) {
-                                tape[i] = '1';
-                            }
-                        }
-                        tape[i++] = '=';
-                        turing.tape = tape;
-                        turing.calc = first + ' + ' + second + ' =';
-                        turing.reset();
-                    } else {
-                        alert('Désolé, saisie invalide !');
-                    }
-                }
-            });
-        });
-    </script>
+	        // s1: 
+	        steps['s1:1'] = {state: 's2', value: 'X', move: 'right'};
+	        steps['s1:*'] = {state: 's8', value: '*', move: 'right'};
+
+	        // s2: move to right until * and goto s3 
+	        steps['s2:1'] = {state: 's2', value: '1', move: 'right'};
+	        steps['s2:*'] = {state: 's3', value: '*', move: 'right'};
+
+	        // s3: replace 1 with Y and goto s4
+	        steps['s3:1'] = {state: 's4', value: 'Y', move: 'right'};
+	        steps['s3:='] = {state: 's6', value: '=', move: 'left'};
+
+	        // s4: write 1 into empty place and goto s5
+	        steps['s4:1'] = {state: 's4', value: '1', move: 'right'};
+	        steps['s4:='] = {state: 's4', value: '=', move: 'right'};
+	        steps['s4:']  = {state: 's5', value: '1', move: 'left'};
+	        
+	        // s4: seek left until Y
+	        steps['s5:1'] = {state: 's5', value: '1', move: 'left'};
+	        steps['s5:='] = {state: 's5', value: '=', move: 'left'};
+	        steps['s5:Y'] = {state: 's3', value: 'Y', move: 'right'};
+
+	        // s6: cleanup Y and seek X
+	        steps['s6:Y'] = {state: 's6', value: '1', move: 'left'};
+	        steps['s6:*'] = {state: 's6', value: '*', move: 'left'};
+	        steps['s6:1'] = {state: 's6', value: '1', move: 'left'};
+	        steps['s6:X'] = {state: 's1', value: 'X', move: 'right'};
+	        
+	        // handle 0
+	        steps['s1:0'] = {state: 's7', value: '0', move: 'right'};
+	        steps['s3:0'] = {state: 's7', value: '0', move: 'right'};
+	        steps['s7:*'] = {state: 's7', value: '*', move: 'right'};
+	        steps['s7:1'] = {state: 's7', value: '1', move: 'right'};
+	        steps['s7:0'] = {state: 's7', value: '0', move: 'right'};
+	        steps['s7:='] = {state: 's7', value: '=', move: 'right'};
+	        steps['s7:']  = {state: 's8', value: '0', move: 'right'};
+
+			// Turning machine
+			var turing = new Turing(steps, 's1', 's8');
+			turing.tape = ['1', '1', '1', '*', '1', '1', '='];
+			turing.calc = '3 * 2 =';
+			turing.reset();
+
+			$('#run').click(function () {
+				turing.run();
+			});
+
+			$('#step').click(function () {
+				turing.step();
+			});
+
+			$('#reset').click(function () {
+				turing.reset();
+			});
+
+			$('#calc').click(function () {
+				var calc = prompt('Please type in new calculation (e.g. 3 * 2):');
+				if (calc) {
+					var match = calc.match(/([0-9]+)[ ]*\*[ ]*([0-9]+)/i);
+					if (match) {
+						var first = parseInt(match[1]), second = parseInt(match[2]);
+						var tape = [];
+						var i = 0;
+						if (0 == first) {
+							tape[i++] = '0';
+						} else {
+							for ( ; i < first; i++) {
+								tape[i] = '1';
+							}
+						}
+						tape[i++] = '*';
+						if (0 == second) {
+							tape[i++] = '0';
+						} else {
+							for (var end = second + i; i < end; i++) {
+								tape[i] = '1';
+							}
+						}
+						tape[i++] = '=';
+						turing.tape = tape;
+						turing.calc = first + ' * ' + second + ' =';
+						turing.reset();
+					} else {
+						alert('Sorry, invalid input!');
+					}
+				}
+			});
+		});
+	</script>
 </head>
 <body>
 
-    <ol class="turing"></ol>
-    
-    <div class="container">
-        <div class="actions">
-            <h2>Actions</h2>
-            <p>
-                <input id="run" type="button" value="Exécuter" />
-                <input id="step" type="button" value="Étape suivante" />
-                <input id="reset" type="button" value="Réinitialiser" />
-            </p>
-        </div>
-        <div class="count">
-            <h2>Compteur</h2>
-            <p id="count"></p>
-        </div>
-        <div class="state">
-            <h2>État</h2>
-            <p id="state"></p>
-        </div>
-        <div class="calc">
-            <h2>Calcul</h2>
-            <p id="calc"></p>
-        </div>
+	<ol class="turing"></ol>
+	
+	<div class="container">
+		<div class="actions">
+			<h2>Actions</h2>
+			<p>
+				<input id="run" type="button" value="Lancer" />
+				<input id="step" type="button" value="Prochaine Étape" />
+				<input id="reset" type="button" value="Reset" />
+			</p>
+		</div>
+		<div class="count">
+			<h2>Compteur</h2>
+			<p id="count"></p>
+		</div>
+		<div class="state">
+			<h2>État</h2>
+			<p id="state"></p>
+		</div>
+		<div class="calc">
+			<h2>Calcul</h2>
+			<p id="calc"></p>
+		</div>
 
-        <div id="canvas"></div>
-    </div>
+		<div id="canvas"></div>
+	</div>
 </body>
 </html>
