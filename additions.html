@@ -1,0 +1,354 @@
+  <!doctype html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MT 2 Days</title>
+    <link rel="stylesheet" href="static/style.css" />
+    <script src="static/jquery.js"></script>
+    <script src="static/raphael.js"></script>
+    <script src="static/joint.js"></script>
+    <script>
+      $(function () {
+
+          // Steps
+          var steps = {};
+
+          // s1: 
+          steps['s1:1'] = {state: 's2', value: '1', move: 'right'};
+
+          // s2
+          steps['s2:1'] = {state: 's2', value: '1', move: 'right'};
+          steps['s2:+'] = {state: 's3', value: '1', move: 'right'};
+
+          // s3
+          steps['s3:1'] = {state: 's3', value: '1', move: 'right'};
+          steps['s3:'] = {state: 's4', value: '', move: 'left'};
+
+          // s4: 
+          steps['s4:1'] = {state: 's5', value: '', move: 'right'};
+
+
+          // Turning machine
+          var turing = new Turing(steps, 's1', 's5');
+          turing.tape = ['1', '1', '1', '+', '1', '1'];
+          turing.calc = '3 + 2 =';
+          turing.reset();
+
+          // Function to count the number of 1s on the tape
+          function countOnes() {
+              var result = turing.tape.join('');
+              var sum = (result.match(/1/g) || []).length;
+              return sum;
+          }
+
+          function updateCount() {
+              $('#calc').text(turing.calc + ' ' + countOnes());
+          }
+
+          $('#run').click(function () {
+              turing.run();
+              updateCount();
+          });
+
+          $('#step').click(function () {
+              turing.step();
+              if (!turing.finished) {
+                  updateCount();
+              }
+          });
+
+          $('#reset').click(function () {
+              turing.reset();
+              updateCount();
+          });
+
+          $('#calc').click(function () {
+              var calc = prompt('Please type in new calculation (e.g. 3 * 2):');
+              if (calc) {
+                  var match = calc.match(/([0-9]+)\s*\+\s*([0-9]+)/i);
+                  if (match) {
+                      var first = parseInt(match[1]), second = parseInt(match[2]);
+                      var tape = [];
+                      var i = 0;
+                      if (0 == first) {
+                          tape[i++] = '0';
+                      } else {
+                          for (; i < first; i++) {
+                              tape[i] = '1';
+                          }
+                      }
+                      tape[i++] = '+';
+                      if (0 == second) {
+                          tape[i++] = '0';
+                      } else {
+                          for (var end = second + i; i < end; i++) {
+                              tape[i] = '1';
+                          }
+                      }
+
+                      turing.tape = tape;
+                      turing.calc = first + ' + ' + second + ' =';
+                      turing.reset();
+
+                      // Display result and count of ones
+                      updateCount();
+                  } else {
+                      alert('Sorry, invalid input!');
+                  }
+              }
+          });
+      });
+    </script>
+    <script>
+
+      var Turing = function (steps, start, end) {
+        this.steps = steps;
+        this.start = start;
+        this.end = end;
+        this.tape = [];
+        this.length = 400;
+        this.speed = 100;
+        this.stop = true;
+        this.count = 0;
+      }
+
+      /**
+       * Method to run the Turing machine.
+       */
+      Turing.prototype.run = function () {
+
+        if (this.stop) {
+
+          $('#run').val("Pause");
+          $('#step').attr('disabled', 'disabled');
+          $('#reset').attr('disabled', 'disabled');
+
+          this.stop = false;
+
+          // start machine
+          this.machine();
+
+        } else {
+
+          // Pause
+          this.stop = true;
+          $('#run').val("Pause…").attr('disabled', 'disabled');
+        }
+      };
+
+      Turing.prototype.reset = function () {
+
+        $('.turing').text('');
+
+        for (var i = 0; i < this.length; i++) {
+
+          $('.turing').append(this.field());
+        }
+
+        var start = 3;
+        for (var i in this.tape) {
+
+          $('.turing li:eq(' + (start + parseInt(i)) + ') input').val(this.tape[i]);
+        }
+
+        $('.turing li:eq(' + start + ')').addClass('active');
+
+        this.current = this.start;
+        this.count = 0;
+
+        function countOnes() {
+            var count = turing.tape.filter(function (value) {
+                return value === '1';
+            }).length;
+            return count;
+        }
+
+        $('#run').val("Run").attr('disabled', '');
+        $('#step').attr('disabled', '');
+        $('#calc').text(this.calc);
+
+        this.info();
+      };
+
+      Turing.prototype.info = function () {
+        $('#count').text(this.count);
+        $('#state').text(this.current);
+        $('#canvas .state').attr({fill: 'none', stroke: '#000'});
+        $('#canvas .state.' + this.current).attr({fill: '#7d9cec', stroke: '#0a3268'});
+        $('#canvas .text').attr({fill: '#000'});
+        $('#canvas .text.' + this.current).attr({fill: '#fff'});
+
+      };
+
+      Turing.prototype.field = function (value) {
+        if (!value) {
+          value = '';
+        }
+        return $('<li><input type="text" size="1" maxlength="1" disabled="disabled" /></li>');
+      };
+
+      /**
+       * Method to read value and run state to get next step.
+       */
+      Turing.prototype.machine = function () {
+
+        var value = $('.turing .active input').val();
+
+        console.log('Evaluate ' + this.current + ' with value ' + value);
+
+        var step = this.steps[this.current + ':' + value];
+
+        if (typeof step != 'undefined') {
+
+          this.current = step.state;
+          this.count++;
+
+          this.timeout = setTimeout(function (that) {
+            that.write(step);
+          }, 1, this);
+
+        } else {
+          console.log('Undefined state ' + this.current + ' with value ' + value);
+        }
+      };
+
+      /**
+       * Method to write value.
+       */
+      Turing.prototype.write = function (step) {
+
+        console.log("Write value " + step.value);
+
+        // write
+        $('.turing .active input').val(step.value);
+
+        this.timeout = setTimeout(function (that) {
+          that.move(step);
+        }, this.speed, this);
+      };
+
+      /**
+       * Method to move Turing to next step.
+       */
+      Turing.prototype.move = function (step) {
+
+        console.log("Move " + step.move);
+
+        var active = $('.turing .active');
+
+        // move
+        active.removeClass('active');
+        switch (step.move) {
+
+          case 'left':
+            // move left
+            if (!active.prev().prev().length) {
+              active.before(this.field());
+            }
+            active.prev().addClass('active');
+            break;
+
+          default:
+            // move right
+            if (!active.next().next().length) {
+              active.after(this.field());
+            }
+            active.next().addClass('active');
+        }
+
+        this.info();
+
+        if (this.stop == false) {
+
+          this.timeout = setTimeout(function (that) {
+            that.check();
+          }, this.speed, this);
+
+        } else {
+
+          // stopped
+          $('#run').val("Run").attr('disabled', '');
+          $('#step').attr('disabled', '');
+          $('#reset').attr('disabled', '');	
+        }
+      };
+
+      /**
+       * Check if we keep it running.
+       */
+      Turing.prototype.check = function () {
+
+        if (this.current != this.end) {
+
+          // all good
+          this.machine();
+
+        } else {
+
+          console.log("Final " + this.current);
+
+          var result = turing.tape.join('');
+          var sum = (result.match(/1/g) || []).length;
+          $('#calc').text(turing.calc + ' ' + sum);
+
+          // end of machine
+          this.stop = true;
+
+          $('#run').val("Run").attr('disabled', 'disabled');
+          $('#step').attr('disabled', 'disabled');
+          $('#reset').attr('disabled', '');
+        }
+      };
+
+      Turing.prototype.step = function () {
+
+        $('#run').attr('disabled', 'disabled')
+        $('#step').attr('disabled', 'disabled');
+        $('#reset').attr('disabled', 'disabled');
+
+        this.stop = true;
+
+        // start for one step machine
+        this.check();
+      };
+
+    </script>
+  </head>
+  <body>
+    <body>
+      <div class="topnav" id="myTopnav">
+        <a class="active" href="index.html">Home</a>
+        <a href="multiplications.html">Multiplications</a>
+        <a href="additions.html">Additions</a>
+        <a href="factorial.html">Factorielles</a>
+      </div>
+    <main>
+    <h1>2 Days Turing Machine</h1>
+    <ol class="turing"></ol>
+
+    <div class="container">
+      <div class="actions">
+        <h2>Actions</h2>
+        <p>
+          <input id="run" type="button" value="Lancer" />
+          <input id="step" type="button" value="Prochaine Étape" />
+          <input id="reset" type="button" value="Reset" />
+        </p>
+      </div>
+      <div class="count">
+        <h2>Compteur</h2>
+        <p id="count"></p>
+      </div>
+      <div class="state">
+        <h2>État</h2>
+        <p id="state"></p>
+      </div>
+      <div class="calc">
+        <h2>Calcul</h2>
+        <p id="calc"></p>
+      </div>
+
+      <div id="canvas"></div>
+    </div>
+    </main>
+  </body>
+  </html>
