@@ -1,5 +1,6 @@
-Turing machine in JavaScript
+Machine de Turing TFE 
 ============================
 
-* Fabian Vogler
-* Cyril Gabathuler
+* Leny
+* 2 Days
+* TFE Math 2024
