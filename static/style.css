@@ -1,108 +1,151 @@
 body {
-	background-color: #f4f4f4;
-	margin: 30px 0 550px 0;
-	font-family: Helvetica, Arial, sans-serif;
+  overflow-y: hidden;
+  background-color: #f1e7a8;
+  background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23f8f3d4' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  margin: 30px 0 550px 0;
+  font-family: Roboto Slab, sans-serif;
+}
+main {
+  margin-top: 55px;
 }
 
+h1 {
+  font-size: 2em;
+  text-align: center;
+}
 h2 {
-	font-size: 0.9em;
-	font-weight: normal;
-	margin: 0 0 0.7em 0;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin: 0 0 0.7em 0;
 }
 
 p {
-	margin: 0;
+  margin: 0;
 }
 
 a {
-	color: #234674;
+  color: #234674;
 }
 
 ol {
-	padding: 0;
-	margin-left: 5px;
+  padding: 0;
+  margin-left: 5px;
 }
 
 li {
-	display: table-cell;
-	vertical-align: bottom;
-	padding-right: 5px;
+  display: table-cell;
+  vertical-align: bottom;
+  padding-right: 5px;
 }
 
 li input[type=text] {
-	font-family: Consolas, Monaco, monospace;
-	font-size: 1.5em;
-	width: 40px;
-	height: 40px;
-	border: 1px solid #ccc;
-	text-align: center;
-	background-color: #fff;
-	color: #000;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 1.5em;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  text-align: center;
+  background-color: #fff;
+  color: #000;
 }
 
 li.active input[type=text] {
-	background-color: #fff8de;
-	border-color: #e7ddb4;
+  background-color: #fff8de;
+  border-color: #e7ddb4;
 }
 
 li.active:before {
-	content: url('magnet.png');
-	display: block;
-	width: 24px;
-	height: 30px;
-	margin: 0 auto;
+  content: url('magnet.png');
+  display: block;
+  width: 24px;
+  height: 30px;
+  margin: 0 auto;
 }
 
 .container {
-	position: fixed;
-	width: 640px;
-	margin: 40px auto;
-	padding: 25px 20px;
-	left: 50%;
-	margin-left: -343px;
-	background-color: #fff;
-	border: 1px solid #ccc;
+  position: fixed;
+  width: 640px;
+  margin: 40px auto;
+  padding: 25px 20px;
+  left: 50%;
+  margin-left: -343px;
+  background-color: #fff;
+  border: 1px solid #ccc;
 }
 
 .actions, .count, .state, .calc {
-	float: left;
-	width: 32%;
-	height: 70px;
-	border: 1px solid #ccc;
-	border-width: 0 1px 1px 0;
+  float: left;
+  width: 32%;
+  height: 70px;
+  border: 1px solid #ccc;
+  border-width: 0 1px 1px 0;
 }
 
 .actions p {
-	line-height: 2.5em;
+  line-height: 2.5em;
 }
 
 .count, .state, .calc {
-	padding-left: 10px;
+  padding-left: 10px;
 }
 
 .count p, .state p, .calc p {
-	font-size: 2em;
-	font-family: Consolas, Monaco, monospace;
+  font-size: 2em;
+  font-family: Consolas, Monaco, monospace;
 }
 
 .count {
-	width: 12%;
+  width: 12%;
 }
 
 .state {
-	width: 12%;
+  width: 12%;
 }
 
 .calc {
-	width: 38%;
-	border-right: 0;
+  width: 38%;
+  border-right: 0;
 }
 
 #calc {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 #canvas {
-	clear: both;
-	margin: 100px auto 20px auto;
+  clear: both;
+  margin: 100px auto 20px auto;
+}
+
+.topnav {
+ background-color: rgba(241, 231, 168, 0.8);
+  transition: background-color 0.5s;
+  text-align: center;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Set a high z-index */
+}
+.topnav.hidden {
+  display: none;
+}
+
+.topnav a {
+  display: inline-block;
+  background-color: rgba(241, 231, 168, 0.8);
+  color: black;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  margin: 0;
+}
+
+.topnav a:hover,
+.topnav a.active {
+  background-color:  #f8f3d4;
+  color: black;
+}
+
+.topnav .icon {
+  display: none;
 }
