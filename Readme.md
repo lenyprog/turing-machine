@@ -2,5 +2,5 @@ Machine de Turing TFE
 ============================
 
 * Leny
-* 2 Days
+* 5 Guys
 * TFE Math 2024
